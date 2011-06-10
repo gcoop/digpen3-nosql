@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+
+<!--
+  Google HTML5 slide template
+
+  Authors: Luke Mahé (code)
+           Marcin Wichary (code and design)
+           
+           Dominic Mazzoni (browser compatibility)
+           Charles Chen (ChromeVox support)
+
+  URL: http://code.google.com/p/html5slides/
+-->
+
+<html>
+  <head>
+    <title>Introduction to NoSQL with CouchDB</title>
+
+    <meta charset='utf-8'>
+    <script src='../slides.js'></script>
+  </head>
+  
+  <style>
+    /* Your individual styles here, or just use inline styles if that’s
+       what you want. */
+    
+    
+  </style>
+
+  <body style='display: none'>
+
+    <section class='slides layout-regular template-default'>
+      
+      <!-- Your slides (<article>s) go here. Delete or comment out the
+           slides below. -->
+        
+        
+      
+      <article class='msw biglogo'>
+      </article>
+
+      <article>
+        <h1>
+          Introduction To NoSQL with CouchDB
+        </h1>
+        <p>
+          Gavin Cooper
+          <br>
+          June 11, 2011
+        </p>
+        
+        <!--
+        	Welcome, I'm here to talk about NoSQL
+        	
+        	How many devs do we have?
+        	
+        	How about production managers?
+        	
+        	This doesn't get too techy chilax.
+        	
+        	Quick presentation 15 mins for questions (hopefully)
+        -->
+      </article>
+      
+      <article>
+      	<h1>@gavincoop</h1>
+      	
+      	<ul>
+	      	<li>http://github.com/gcoop</li>
+  	    	<li>http://uk.linkedin.com/in/gavincoop</li>
+  	    </ul>
+      </article>
+      
+      <article>
+      	<h1>Magicseaweed.com</h1>
+      	<ul>
+      		<li>Surf forecast for surfers.</li>
+      		<li>1 million uniques</li>
+      		<li>4 million page views</li>
+      	</ul>
+      </article>
+      
+      <article class="fill">
+        <h3>
+          Let's find out why NoSQL is <em>awesome</em> - Enter the Delorean
+        </h3>
+        <p>
+          <img src='images/back-to-the-future-part-ii-original.jpg'>
+        </p>
+        <div class='source white'>
+          Source: themoviedb.org
+        </div>
+        <!--
+        	To understand why we should use a new technology we need to understand why it was created.
+        -->
+      </article>
+      
+      <article class="build">
+      	<h1>Arpnet</h1>
+      	<p>I'm Kidding</p>
+      </article>
+
+      <article class="fill">
+        <h3>
+          Everything starts with a problem
+        </h3>
+        <p>
+          <img src='images/math-problem.jpg'>
+        </p>
+        <div class='source white'>
+          Source: http://www.flickr.com/photos/arjin/3271430123/sizes/l/in/photostream/
+        </div>
+        <!--
+        	NoSQL was created for the same reasons every successful web app we use today was 
+        -->
+      </article>
+      
+      <article>
+        <q>
+          to solve a problem or harness technology to make something more efficient
+        </q>
+      </article>
+
+      <article class='biglogo'>
+      	<!--
+      	 Google
+      	 Created because.
+      	 	Problem: There were millions of web pages, with collectively a giant mesh of data, but there was no directory, we couldn't find anything.
+      	 	Improvement: AOL, Yahoo was shit.
+      	-->
+      </article>
+      
+      <article class='facebook biglogo'>
+      	<!--
+      	 Facebook
+      	 Created because.
+      	 	Problem: We had to ask/call/chat to our friends to find out what they were doing and what they had done. Manually
+      	 	Improvement: We were doing it in real life, but how about we aggregate it using technology.
+      	 	
+      	 	Side note, what do you think Facebook's Graph API is?? I can tell u it's no different from using CouchDB's RESTful interface. NoSQL is a data graph. but don't confuse it with a GraphDB that's something else...
+      	-->
+      </article>
+      
+      <article class="fill">
+        <h3>
+          Everyone can write data, everyone wants to share...
+        </h3>
+        <p>
+          <img src='images/crowd.jpg'>
+        </p>
+        <div class='source white'>
+          Source: http://www.flickr.com/photos/jacofoto/4794560911/
+        </div>
+      	<!--
+      		- 90's it was all comsumption of data, minimum change.
+      		- 00's its all push, everyone can write data - the app is configured for you. decenteralised content creators instead of a few = millions of possible creators. hallmark of web "2.0"
+      		
+      		That created a problem, the current technology didn't scale.
+      	-->
+      </article>
+      
+      <article>
+      	<h3>The old technology RDBMS</h3>
+      	<ul class="build">
+      		<li>Designed in the mainframe era.</li>
+      		<!--
+      			The concept of RDBMS was designed in the mainframe era when we had computers that filled rooms
+      			
+      			Then the internet happended and we had dynamic pages that needed storage, so we adapted and used RDBMS.
+      			
+      			Everything was good, because we had little writes and simple reads. Infact there wasn't that many users.
+      			
+      			Then Facebook happened..
+      			
+      			Sundenly websites had social, websites were specific to every user, websites became web apps.
+      			Many writes, millions of users..
+      		-->
+      		<li>It's relational, yet we use Objects/Documents in PHP.</li><!-- 
+      			1000s of lines of glue code to take relational tables into data objects to read
+      			and back again to save... why? THERE IS NO GOOD REASON.
+      			
+      			how about this, you store an invoice in RDBMS land, you store the address in a seperate table.
+      			a year later the customer changes there address
+      			
+      			did the invoices address change?
+      			
+      			you build ecommerce, customers have one address you put it in the user table
+      			10,000 customers later you decide two addresses, you need another table and complex data/schema migration, maybe even downtime?
+      			changes/migrations break things. full stop. much easier if you don't have to.
+      			-->
+      		<li>It doesn't scale horizontally.</li>
+      		<!-- 
+      			- master then slaves (ok for low write, but high 50/50 read/write = problems) not master-master 
+      			- if distributed, what happens if replication breaks? scheama not migrated code expects x fields because in rdbms land u write code to expect fields with distributed you can never assume all nodes are identical.
+      		-->
+      		<li>It can't handle lots of connections.</li> <!-- 
+      			- one connection many sql quieris, now we use an api and request more frequently but smaller chunks, we need more throughput - RDBMS was not designed for this it was designed in the mainframe era they didn't prevision for this, not that they should have! 
+      			- little concurrency and blocking
+      			- race conditions.	
+      		-->
+      		<li>Running clusters is hard work.</li> <!-- scheame migrations, easy for replication to stop -->
+      		<li>Memcache to turbo-charge.</li><!-- used memcache to relieve the DB - ITS A KEY/VALUE STORE, it's just not persistent. -->
+      	</ul>
+      </article>
+
+			<article>
+        <q>
+          the problem is real, it isn't just trendy bullshit
+        </q>
+        <!--
+        	We need a solution for the modern day internet, for web apps not websites.
+        
+        	Google, Facebook, Twitter, Amazon, Ebay don't invest millions of $'s of resources on trendy bullshit.
+        -->
+      </article>
+		
+			<article>
+				<h3>NoSQL (more specifically CouchDB)</h3>
+				<ul class="build">
+					<li>Built for todays internet, infact built of todays internet (RESTful interface, JSON documents and JS map/reduce).</li>
+					<!--
+						Client side code expects RESTful api's.
+						JSON rocks, XML sucks.
+					-->
+					<li>Just store the document.</li>
+					<!--
+						They're called document store's but we are really talking about objects.
+						
+						Just store the invoice with the address, don't split it out only to put it back together.
+					-->
+					<li>Documents means no schema, no schema migrations, simpler to replicate.</li>
+					<!--
+						rdbms scheama up front - but the scheame isn't fixed it changes this is THE CORE OF THE problem.
+						nosql scheame after with map/reduce.
+						solves the no-node identical problem.
+					-->
+					<li>Horizontal replication is an easy win</li>
+					<!--
+						Because your system inheritently expects and open schema horizontal replication is an easy win.
+						
+						No node needs to be identical eventual consistency can work - bear in mind all nodes the same isn't practical.
+						
+						Need to scale? easy just add another server, master-master replication in couch takes 15 seconds to setup.
+					-->
+					<li>Built specifically to handle many concurrent connections.</li>
+					<!--
+						couchdb, fault tolerant, mysql race = server dies. couchdb just kills the bad connection.
+						couchdb built in erlang, telecoms, 20 million processes.
+					-->
+				</ul>
+			</article>
+			
+			<article>
+				<h1>What if I don't need scale?</h1>
+			</article>
+			
+			<article class="fill">
+        <h3>
+          Schema free
+        </h3>
+        <p>
+          <img src='images/free.jpg'>
+        </p>
+        <div class='source white'>
+          Source: http://www.flickr.com/photos/josefgrunig/1732787905/
+        </div>
+        <!--
+        	Data migrations are a ball-ache, they do cause problems.
+        	
+        	It is more work to migrate data.
+        	
+        	It takes more time. More time = more money.
+        -->
+			</article>
+			
+			<article class="build">
+				<h3>Say goodby to (lots of) this...</h3>
+				<pre>$DBH = new PDO("mysql:host=$host;dbname=$dbname", $user, $pass);  
+$DBH->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );</pre>
+				
+				<h3>And this...</h3>
+				<pre class="tinycode">SELECT 
+	ur.id,
+	ur.userId,
+	ur.spotid,
+	ur.actualWaveHeight,
+	ur.windStrength,
+	ur.windDirection,
+	ur.photoId,
+	ur.submitted,
+	UNIX_TIMESTAMP(ur.reportDate) AS reportDate,
+	ur.rating,
+	ur.reportText,
+	ep.id AS actualPhotoId,
+	3956 * 2 * ASIN(SQRT(POWER(SIN((? - abs(s.`lat`)) * pi()/180/2), 2) + COS(? * pi()/180) * COS(abs(s.`lat`) * pi()/180) * POWER(SIN((? - s.`lon`) * pi()/180/2),2))) as DIST,
+	s.lat as latitude,
+	s.lon as longitude
+FROM someSpots s
+LEFT JOIN somePeoplesReports ur ON (ur.spotId = s.id)
+LEFT JOIN aUser u ON (ur.userId = u.id)
+LEFT JOIN someReportImage ep ON (ur.id = ep.eyeballReportId)
+WHERE UNIX_TIMESTAMP(ur.reportDate) > (UNIX_TIMESTAMP(NOW())-86400)
+AND u.trusted = 'yes'
+AND s.lon BETWEEN ? AND ?
+AND s.lat BETWEEN ? AND ?
+GROUP BY ur.userId
+ORDER BY DIST, ur.reportDate DESC</pre>
+				<!--
+					I'm sure you've all got more silly queries than this.
+					
+					The point here is we just want a single data object out with some indexing and there's 3 joins.
+					
+					+ a group by which = a temporary table.
+				-->
+			</article>
+			
+			<article class="fill">
+				<h3>Say hello to a baked in RESTful API</h3>
+        <p>
+          <img src='images/wunderlist.png'>
+        </p>
+        <div class='source white'>
+          Source: http://www.flickr.com/photos/josefgrunig/1732787905/
+        </div>
+        <!--
+        	Wunderlist super simple todo app.
+        
+        	Executed beautifully.
+        	
+        	It's one page, views load and interchange just like a desktop app.
+        	
+        	Data is pulled and pushed in the background, by something like backbone.js
+        	
+        	Data is interacting using a RESTful interface to a data store.
+        	
+        	with CouchDB your client-side js can talk direct to the store.
+        -->
+			</article>
+			
+      <article class="fill">
+        <h3>
+          Thank you! that's a wrap.
+        </h3>
+        <p>
+          <img src='images/android-couch.jpg'>
+        </p>
+        <div class='source white'>
+          Source: http://www.flickr.com/photos/appletv/4920964839/
+        </div>
+        <!--
+        	Questions...
+        -->
+      </article>
+
+    </section>
+
+  </body>
+</html>
