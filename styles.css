@@ -185,7 +185,7 @@ body {
   transform: translate(-2040px);
   -o-transform: translate(-2040px);
   -moz-transform: translate(-2040px);
-  -webkit-transform: translate3d(-2040px, 0, 0);
+  -webkit-transform: translate3d(-2040px, 0, -500px) rotateY(-55deg);
 }
 .slides > article.past {
   display: block;
@@ -215,7 +215,7 @@ body {
   transform: translate(2040px);
   -o-transform: translate(2040px);
   -moz-transform: translate(2040px);
-  -webkit-transform: translate3d(2040px, 0, 0);
+  -webkit-transform: translate3d(2040px, 0, -500px) rotateY(55deg);
 }
 
 .slides.layout-widescreen > article.far-past,
